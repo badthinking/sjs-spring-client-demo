@@ -66,6 +66,7 @@ public class DataServiceClient {
     private String buildDeleteUri( final String jobserverFilename ) {
         final String baseUriComponent = UriComponentsBuilder.fromHttpUrl( this.dataUrl).build().encode()
                 .toUriString();
+        // this is confusing too, since you must not encode the filename in any way, that is handled entirely by the client
         return baseUriComponent + jobserverFilename;
     }
 
