@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,14 +26,18 @@ public class WordCountJobClient {
 
     public Map<String, Integer> wordCount(String text) {
 
-        String url = this.jobsBaseUrl + "?appName=test&classPath=spark.jobserver.WordCountExampleNewApi&sync=true";
+        final URI requestUri = UriComponentsBuilder.fromHttpUrl(jobsBaseUrl)
+                .queryParam("appName", "test")
+                .queryParam("classPath", "spark.jobserver.WordCountExampleNewApi")
+                .queryParam("sync", "true")
+                .build().encode().toUri();
 
-        Map<String,Object> jobData = new HashMap<>();
-        Map<String,String> stringData = new HashMap<>();
+        Map<String, Object> jobData = new HashMap<>();
+        Map<String, String> stringData = new HashMap<>();
         stringData.put("string", text);
         jobData.put("input", stringData);
 
-        Map<String,Map<String,Integer>> result = restTemplate.postForObject(url, jobData, Map.class);
+        Map<String, Map<String, Integer>> result = restTemplate.postForObject(requestUri, jobData, Map.class);
 
         LOG.info("Retrieved from service {}", result);
 
