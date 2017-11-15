@@ -15,7 +15,7 @@ import java.util.Map;
 @Service
 public class WordCountJobClient {
 
-    private static final Logger LOG = LoggerFactory.getLogger(QueryService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WordCountJobClient.class);
 
     @Value("${jobserver.jobs.url:http://localhost:8090/jobs}")
     private String jobsBaseUrl;

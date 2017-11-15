@@ -14,16 +14,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Call variants for commandline
+ * <pre>
+ *     Main class
+ *     com.github.c_mehring.sjs.client.{@link DemoApplication}
+ *
+ *     A) list files available @ /data
+ *        --queryData
+ *
+ *     B) deleteFile(s) available @ /data
+ *        "--deleteData=[FILENAME]"
+ *
+ *     C) run WordCountApplication from jobserver examples
+ *        "--countWords=a b c see d a c"
+ *
+ *
+ * </pre>
+ */
 @SpringBootApplication
 public class DemoApplication {
 
     private static final Logger LOG = LoggerFactory.getLogger(DemoApplication.class);
 
     @Autowired
-    private QueryService queryService;
+    private WordCountJobClient wordCountJobClient;
 
     @Autowired
-    private WordCountJobClient wordCountJobClient;
+    private DataServiceClient dataServiceClient;
 
     @Bean
     public RestTemplate getRestTemplate(RestTemplateBuilder builder) {
@@ -32,22 +50,24 @@ public class DemoApplication {
 
     @Bean
     public ApplicationRunner runDataQuery() {
-
         return args -> {
             if (args.containsOption("queryData")) {
-                List<String> data = queryService.readData();
+                List<String> data = dataServiceClient.readData();
                 LOG.info("{} result(s) from Service: {}", data.size(), data);
+            } else if (args.containsOption("deleteData")) {
+                dataServiceClient.deleteFile(args.getOptionValues("deleteData"));
             } else if (args.containsOption("countWords")) {
+
                 String text = args
                         .getOptionValues("countWords")
                         .stream()
                         .collect(Collectors.joining(" "));
 
-                Map<String,Integer> result = wordCountJobClient.wordCount(text);
+                Map<String, Integer> result = wordCountJobClient.wordCount(text);
+
                 LOG.info("Text '{}' contains {} words", text, result);
+
             }
-
-
         };
     }
 
