@@ -2,5 +2,5 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
     <logger name="org.springframework.web" level="DEBUG"/>
-    <logger name="com.example" level="DEBUG"/>
+    <logger name="com.github.c_mehring.sjs.client" level="DEBUG"/>
 </configuration>
